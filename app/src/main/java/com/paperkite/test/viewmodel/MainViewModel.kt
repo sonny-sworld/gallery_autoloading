@@ -16,7 +16,7 @@ class MainViewModel (private val repository: Repository): ViewModel(){
     val isViewLoading: LiveData<Boolean> = _isViewLoading
 
     private val _onMessageError = MutableLiveData<Any>()
-    val onMessageError: LiveData<Any> = _onMessageError
+    val onMessageError: LiveData<Any> = _onMessageError // TODO SHOW ERROR
 
     init { loadCat() }
 
@@ -25,7 +25,11 @@ class MainViewModel (private val repository: Repository): ViewModel(){
         repository.fetchCat(object: OperationCallback<Cat>{
             override fun onSuccess(data: List<Cat>?) {
                 _isViewLoading.value = false
-                _catList.value = data
+                val catArray = data as ArrayList<Cat>
+                // ADD EMPTY DATA AT FRONT AND END
+                catArray.add(data.size,Cat(null,null,null,null))
+                catArray.add(0,Cat(null,null,null,null))
+                _catList.value = catArray
             }
             override fun onError(error: String?) {
                 _isViewLoading.value = false
